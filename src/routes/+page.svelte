@@ -1,10 +1,32 @@
 <script>
-	import Task from "$lib/components/Task.svelte";
+	import TaskList from "$lib/components/TaskList.svelte";
+	let task = "";
+	let taskList = [];
+
+	function handleKeypress(event) {
+		if (event.key === "Enter" && task !== "") {
+			taskList = [...taskList, task];
+		}
+	}
 </script>
 
-<Task task="Create a TaskList component to house all tasks"/>
-<p/>
-<Task task="Create an input to add new tasks. Inside the TaskList component or external to it? Who knows? (probably external)"/>&nbsp
-<p/>
-<Task task="Wow, using my newly built Todo app to document my todos? So meta! And instant value"/>&nbsp
-<p/>
+<div class="center">
+	<TaskList bind:taskList/>
+</div>
+<input id="taskInput" type="text" bind:value={task} placeholder="Choose your next weapon against laziness" onkeypress="{handleKeypress}"/>
+
+<style>
+	.center {
+		margin-left: auto;
+		margin-right: auto;
+		width: 40%;
+	}
+
+	#taskInput {
+		bottom: 20px;
+		left: 50%;
+		position: fixed;
+		transform: translate(-50%, 0);
+		width: 40%;
+	}
+</style>
