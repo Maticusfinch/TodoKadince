@@ -11,10 +11,4 @@
 </script>
 
 <input type="checkbox" bind:checked={completed} onclick={toggleTaskCompletion} />
-<span class:completed>{task + (completedTimestamp ? " (Completed on: " + formatTimestamp(completedTimestamp) + ")" : "")}</span>
-
-<style>
-	.completed {
-		color: lightgray;
-	}
-</style>
+<span>{task + (completedTimestamp ? " (Completed on: " + formatTimestamp(completedTimestamp) + ")" : "")}</span>
