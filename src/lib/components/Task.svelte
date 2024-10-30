@@ -2,8 +2,10 @@
 	import {formatTimestamp} from "../utilities/DateUtil.js";
 
 	export let completedTimestamp;
+	export let id;
 	export let task;
 	export let onDelete;
+	export let onSave;
 	let checked = completedTimestamp;
 	let completedCheckbox;
 	let editButton;
@@ -31,12 +33,8 @@
 		
 		if (saveTask) {
 			if (task !== taskInput.value) {
-				task = taskInput.value;
-				checked = false;
-				completedTimestamp = null;
+				return onSave(id, taskInput.value);
 			}
-		} else {
-			taskInput.value = task;
 		}
 	}
 
@@ -47,6 +45,7 @@
 		deleteButton.classList.remove("hidden");
 		taskSpan.classList.add("hidden");
 		taskInput.classList.remove("hidden")
+		taskInput.value = task;
 	}
 
 	function handleDeleteButtonClick() {
@@ -75,7 +74,7 @@
 
 <div class="container">
 	<input bind:this={completedCheckbox} style="grid-row: 1;" type="checkbox" bind:checked onclick={toggleTaskCompletion} />
-	<input bind:this={taskInput} class="hidden" style="grid-row: 1;" type="text" placeholder="Leaving this empty would be cheating..." value={task} onkeydown={handleTaskInputKeydown}/>
+	<input bind:this={taskInput} class="hidden" style="grid-row: 1;" type="text" placeholder="Leaving this empty would be cheating..." onkeydown={handleTaskInputKeydown}/>
 	<span bind:this={taskSpan} style="grid-row: 1;">{buildTaskText()}</span>
 	<div class="container">
 		<button bind:this={editButton} aria-label="edit" onclick={enableEdit}><i class="fas fa-pencil"></i></button>

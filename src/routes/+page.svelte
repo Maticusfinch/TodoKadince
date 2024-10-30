@@ -5,12 +5,19 @@
 	let sendButton;
 	let taskInput;
 
-	function handleKeypress(event) {
-		if (event.key === "Enter" && taskInput.value !== "" && taskList.every(({task}) => task !== taskInput.value)) {
-			taskList = [...taskList, {task: taskInput.value, completedTimestamp: null}];
+	function addTask() {
+		if (taskInput.value !== "" && taskList.every(({task}) => task !== taskInput.value)) {
+			taskList = [...taskList, {id: taskList.length + 1, task: taskInput.value, completedTimestamp: null}];
 			taskInput.value = "";
 		}
 	}
+
+	function handleKeypress(event) {
+		if (event.key === "Enter") {
+			addTask();
+		}
+	}
+
 </script>
 
 <div class="center margin-top">
@@ -18,7 +25,7 @@
 </div>
 <div class="container">
 	<input bind:this={taskInput} type="text" placeholder="Choose your next weapon against laziness" onkeypress="{handleKeypress}"/>
-	<button bind:this={sendButton} aria-label="send"><i class="fas fa-plus"></i></button>
+	<button bind:this={sendButton} onclick={addTask} aria-label="send"><i class="fas fa-plus"></i></button>
 </div>
 <style>
 	.center {
@@ -52,4 +59,13 @@
 		margin-top: 20px;
 	}
 
+	@media (min-width:700px) {
+		.center {
+			width: 40%;
+		}
+
+		.container {
+			width: 40%;
+		}
+	}
 </style>
