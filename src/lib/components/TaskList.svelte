@@ -10,10 +10,10 @@
 
 	function handleSave(taskId, taskToSave) {
 		if (taskToSave !== "" && taskList.every(({task}) => task !== taskToSave)) {
-			let existingTask = taskList.find((task) => task.id === taskId);
+			const taskIndex = taskList.findIndex(task => task.id === taskId);
 
-			if (existingTask) {
-				taskList = [...taskList.filter(({id}) => id !== existingTask.id), {task: taskToSave, completedTimestamp: existingTask.completedTimestamp}];
+			if (taskIndex !== -1) {
+				taskList[taskIndex].task = taskToSave;
 			}
 		}
 	}
