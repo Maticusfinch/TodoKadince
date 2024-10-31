@@ -61,7 +61,7 @@
 
 	@media (min-width:700px) {
 		.center {
-			width: 40%;
+			width: 60%;
 		}
 
 		.container {

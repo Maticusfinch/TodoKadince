@@ -1,5 +1,6 @@
 <script>
 	import {formatTimestamp} from "../utilities/DateUtil.js";
+    import Checkbox from "./Checkbox.svelte";
 
 	export let completedTimestamp;
 	export let id;
@@ -68,14 +69,14 @@
 	}
 
 	function toggleTaskCompletion() {
-		completedTimestamp = checked ? null : Date.now();
+		completedTimestamp = checked ? Date.now() : null;
 	}
 </script>
 
 <div class="container">
-	<input bind:this={completedCheckbox} style="grid-row: 1;" type="checkbox" bind:checked onclick={toggleTaskCompletion} />
-	<input bind:this={taskInput} class="hidden" style="grid-row: 1;" type="text" placeholder="Leaving this empty would be cheating..." onkeydown={handleTaskInputKeydown}/>
-	<span bind:this={taskSpan} style="grid-row: 1;">{buildTaskText()}</span>
+	<Checkbox bind:checked style="grid-row: 1" onclick={toggleTaskCompletion}/>
+	<input bind:this={taskInput} class="hidden" style="grid-column: 2; grid-row: 1;" type="text" placeholder="Leaving this empty would be cheating..." onkeydown={handleTaskInputKeydown}/>
+	<span bind:this={taskSpan} style="grid-column: 2; grid-row: 1;">{buildTaskText()}</span>
 	<div class="container">
 		<button bind:this={editButton} aria-label="edit" onclick={enableEdit}><i class="fas fa-pencil"></i></button>
 		<button bind:this={saveButton} class="hidden" aria-label="save" onclick={saveAndDisableEdit}><i class="fas fa-save"></i></button>
@@ -87,18 +88,30 @@
 
 <style>
 	.container {
+		align-items: center;
+		background-color: #333333;
 		border: solid 1px black;
-		border-radius: 2px;
+		border-radius: 5px;
 		display: grid;
-		grid-template-columns: fit-content(50px) 1fr fit-content(200px);
-		padding: 3px;
+		gap: 3px;
+		grid-template-columns: fit-content(100px) 1fr fit-content(200px);
+		padding: 9px;
+	}
+
+	.container * {
+		padding: 9px;
 	}
 	
 	.container .container {
 		align-content: center;
 		border: none;
 		gap: 2px;
-		padding: 0;
+		padding: 0px;
+	}
+
+	.container .container * {
+		background-color: #666666;
+		padding: 0px;
 	}
 
 	.container button {
@@ -108,7 +121,7 @@
 	}
 
 	.fa-trash {
-		color: darkred;
+		color: salmon;
 	}
 
 	.hidden {
