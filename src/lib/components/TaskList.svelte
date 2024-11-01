@@ -3,9 +3,10 @@
 
 	export let filterValue = "All";
 	export let taskList;
+	export let showTaskList;
 
-	function handleDelete(taskToDelete) {
-		taskList = taskList.filter(({task}) => task !== taskToDelete);
+	function handleDelete(taskIdToDelete) {
+		taskList = taskList.filter(({id}) => id !== taskIdToDelete);
 	}
 
 	function handleSave(taskId, taskToSave) {
@@ -19,14 +20,12 @@
 	}
 </script>
 
-{#if taskList.length > 0}
-	{#each taskList as {id, task, completedTimestamp} (id)}
-		{#if filterValue === "All"}
-			<Task bind:id bind:task bind:completedTimestamp onDelete={handleDelete} onSave={handleSave}/>
-		{:else if filterValue === "In Progress" && !completedTimestamp}
-			<Task bind:id bind:task bind:completedTimestamp onDelete={handleDelete} onSave={handleSave}/>
-		{:else if filterValue === "Completed" && completedTimestamp}
-			<Task bind:id bind:task bind:completedTimestamp onDelete={handleDelete} onSave={handleSave}/>
-		{/if}
-	{/each}
-{/if}
+{#each taskList as {id, task, completedTimestamp, status} (id)}
+	{#if filterValue === "All" && showTaskList}
+		<Task bind:id bind:task bind:completedTimestamp bind:status onDelete={handleDelete} onSave={handleSave}/>
+	{:else if filterValue === "In Progress" && status === "In Progress" && showTaskList}
+		<Task bind:id bind:task bind:completedTimestamp bind:status onDelete={handleDelete} onSave={handleSave}/>
+	{:else if filterValue === "Completed" && status === "Completed" && showTaskList}
+		<Task bind:id bind:task bind:completedTimestamp bind:status onDelete={handleDelete} onSave={handleSave}/>
+	{/if}
+{/each}

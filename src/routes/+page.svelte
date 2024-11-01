@@ -1,6 +1,7 @@
 <script>
 	import TaskList from "$lib/components/TaskList.svelte";
 
+	$: showTaskList = true;
 	$: taskList = [];
 	let addButton;
 	let filterAllButton;
@@ -11,29 +12,35 @@
 
 	function addTask() {
 		if (taskInput.value !== "" && taskList.every(({task}) => task !== taskInput.value)) {
-			taskList = [...taskList, {id: taskList.length + 1, task: taskInput.value, completedTimestamp: null}];
+			taskList = [...taskList, {id: taskList.length + 1, task: taskInput.value, completedTimestamp: null, status: "In Progress"}];
 			taskInput.value = "";
 		}
 	}
 
 	function changeFilter(event) {
+		const transitionFromCount = taskList.filter(({status}) => filterValue === status || filterValue === "All").length;
+		showTaskList = transitionFromCount === 0;
 		filterValue = event.srcElement.innerText;
+
 		switch (filterValue) { 
 			case "All":
-				filterAllButton.classList.add("selected");
 				filterCompletedButton.classList.remove("selected");
 				filterInProgressButton.classList.remove("selected");
+				setTransitionTimeoutHandler(transitionFromCount);
+				filterAllButton.classList.add("selected");
 
 				break;
 			case "Completed":
 				filterAllButton.classList.remove("selected");
-				filterCompletedButton.classList.add("selected");
 				filterInProgressButton.classList.remove("selected");
+				setTransitionTimeoutHandler(transitionFromCount);
+				filterCompletedButton.classList.add("selected");
 
 				break;
 			case "In Progress":
 				filterAllButton.classList.remove("selected");
 				filterCompletedButton.classList.remove("selected");
+				setTransitionTimeoutHandler(transitionFromCount);
 				filterInProgressButton.classList.add("selected");
 		}
 	}
@@ -44,11 +51,16 @@
 		}
 	}
 
+	function setTransitionTimeoutHandler(transitionFromCount) {
+		if (transitionFromCount > 0) {
+			setTimeout(() => {showTaskList = true}, 400);
+		}
+	}
 </script>
 
 <div id="addTaskContainerBackdrop"></div>
 <div id="addTaskContainer">
-	<input bind:this={taskInput} id="taskInput" type="text" placeholder="Choose your next weapon against laziness" onkeypress="{handleKeypress}"/>
+	<input bind:this={taskInput} id="addTaskInput" type="text" placeholder="Choose your next weapon against laziness" onkeypress="{handleKeypress}"/>
 	<i bind:this={addButton} onclick={addTask} class="checkbox fas fa-plus" aria-label="Add Task"></i>
 </div>
 <div id="filterContainer">
@@ -59,7 +71,7 @@
 <div id="mainContainer">
 	<div id="taskListContainer" class="center margin-top">
 		<div>
-			<TaskList bind:taskList bind:filterValue/>
+			<TaskList bind:taskList bind:filterValue bind:showTaskList/>
 		</div>
 	</div>
 </div>
@@ -85,7 +97,7 @@
 
 	#addTaskContainerBackdrop {
 		background-color: #222222;
-		height: 16vh;
+		height: 17vh;
 		left: 0;
 		right: 0;
 		top: 0;
@@ -93,12 +105,24 @@
 		width: 100%;
 	}
 
+	#addTaskInput {
+		border-color: #229988;
+		background-color: #333333;
+		color: #229988;
+		font-size: 18px;
+		padding: 9px;
+	}
+
+	#addTaskInput:focus {
+		border-color: #229988;
+	}
+
 	#filterContainer {
 		display: grid;
 		grid-template-columns: 33% 34% 33%;
 		left: 50%;
 		position: fixed;
-		top: 10%;
+		top: 11%;
 		transform: translateX(-50%);
 		width: 59%;
 	}
@@ -120,25 +144,14 @@
 	}
 
 	#mainContainer {
-		height: 84vh;
+		height: 83vh;
 		left: 50%;
 		overflow-y: auto;
 		position: fixed;
 		scrollbar-gutter: stable;
-		top: 16%;
+		top: 17%;
 		transform: translateX(-50%);
 		width: 100%;
-	}
-
-	#taskInput {
-		border-color: #229988;
-		background-color: #333333;
-		color: #229988;
-		padding: 9px;
-	}
-
-	#taskInput:focus {
-		border-color: #229988;
 	}
 
 	#taskListContainer {

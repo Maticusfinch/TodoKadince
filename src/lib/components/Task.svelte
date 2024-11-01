@@ -1,13 +1,16 @@
 <script>
-	import {formatTimestamp} from "../utilities/DateUtil.js";
-    import Checkbox from "./Checkbox.svelte";
+	import {fade, fly} from 'svelte/transition';
 
+	import Checkbox from "./Checkbox.svelte";
+	import {formatTimestamp} from "../utilities/DateUtil.js";
+
+	$: checked = status === "Completed";
 	export let completedTimestamp;
 	export let id;
 	export let task;
 	export let onDelete;
 	export let onSave;
-	let checked = completedTimestamp;
+	export let status = checked ? "Completed" : "In Progress";
 	let editButton;
 	let saveButton;
 	let cancelButton;
@@ -51,7 +54,7 @@
 	function handleDeleteButtonClick() {
 		disableEdit(false);
 
-		return onDelete(task);
+		return onDelete(id);
 	}
 
 	function handleTaskInputKeydown(event) {
@@ -69,10 +72,11 @@
 
 	function toggleTaskCompletion() {
 		completedTimestamp = checked ? Date.now() : null;
+		status = checked ? "Completed" : "In Progress";
 	}
 </script>
 
-<div class="container">
+<div class:completed={checked} class="container" in:fly="{{x: -200, duration: 400}}" out:fade="{{duration: 400}}">
 	<Checkbox bind:checked style="grid-row: 1" onclick={toggleTaskCompletion}/>
 	<input bind:this={taskInput} id="taskInput" class="hidden" style="grid-column: 2; grid-row: 1;" type="text" placeholder="Leaving this empty would be cheating..." onkeydown={handleTaskInputKeydown}/>
 	<span bind:this={taskSpan} id="taskSpan" style="grid-column: 2; grid-row: 1;">{buildTaskText()}</span>
@@ -113,6 +117,10 @@
 		margin-top: 9px;
 		padding: 9px 9px 9px 14px;
 		width: 80%;
+	}
+	
+	.completed {
+		opacity: .5;
 	}
 
 	.container .container {
