@@ -1,7 +1,7 @@
 <script>
 	import Task from "./Task.svelte";
 
-	export let filterSelectValue;
+	export let filterValue = "All";
 	export let taskList;
 
 	function handleDelete(taskToDelete) {
@@ -19,36 +19,14 @@
 	}
 </script>
 
-{#if taskList.length === 0}
-	<span>Add a new task below</span>
-{:else}
-	<div class="right margin-bottom-3px">
-		<select bind:value={filterSelectValue}>
-			<option>All</option>
-			<option>In Progress</option>
-			<option>Completed</option>
-			<!-- Add if there's time: <option>Containing matched word</option> -->
-		</select>
-	</div>
+{#if taskList.length > 0}
 	{#each taskList as {id, task, completedTimestamp} (id)}
-		{#if filterSelectValue === "All"}
+		{#if filterValue === "All"}
 			<Task bind:id bind:task bind:completedTimestamp onDelete={handleDelete} onSave={handleSave}/>
-		{:else if filterSelectValue === "In Progress" && !completedTimestamp}
+		{:else if filterValue === "In Progress" && !completedTimestamp}
 			<Task bind:id bind:task bind:completedTimestamp onDelete={handleDelete} onSave={handleSave}/>
-		{:else if filterSelectValue === "Completed" && completedTimestamp}
+		{:else if filterValue === "Completed" && completedTimestamp}
 			<Task bind:id bind:task bind:completedTimestamp onDelete={handleDelete} onSave={handleSave}/>
 		{/if}
 	{/each}
 {/if}
-
-<style>
-	.margin-bottom-3px {
-		margin-bottom: 3px;
-	}
-
-	.right {
-		margin-left: auto;
-		margin-right: 0px;
-		width: fit-content;
-	}
-</style>

@@ -1,14 +1,40 @@
 <script>
 	import TaskList from "$lib/components/TaskList.svelte";
+
 	$: taskList = [];
-	let filterSelectValue = "All";
-	let sendButton;
+	let addButton;
+	let filterAllButton;
+	let filterCompletedButton;
+	let filterInProgressButton;
+	let filterValue = "All";
 	let taskInput;
 
 	function addTask() {
 		if (taskInput.value !== "" && taskList.every(({task}) => task !== taskInput.value)) {
 			taskList = [...taskList, {id: taskList.length + 1, task: taskInput.value, completedTimestamp: null}];
 			taskInput.value = "";
+		}
+	}
+
+	function changeFilter(event) {
+		filterValue = event.srcElement.innerText;
+		switch (filterValue) { 
+			case "All":
+				filterAllButton.classList.add("selected");
+				filterCompletedButton.classList.remove("selected");
+				filterInProgressButton.classList.remove("selected");
+
+				break;
+			case "Completed":
+				filterAllButton.classList.remove("selected");
+				filterCompletedButton.classList.add("selected");
+				filterInProgressButton.classList.remove("selected");
+
+				break;
+			case "In Progress":
+				filterAllButton.classList.remove("selected");
+				filterCompletedButton.classList.remove("selected");
+				filterInProgressButton.classList.add("selected");
 		}
 	}
 
@@ -20,52 +46,122 @@
 
 </script>
 
-<div class="center margin-top">
-	<TaskList bind:taskList bind:filterSelectValue/>
+<div id="addTaskContainerBackdrop"></div>
+<div id="addTaskContainer">
+	<input bind:this={taskInput} id="taskInput" type="text" placeholder="Choose your next weapon against laziness" onkeypress="{handleKeypress}"/>
+	<i bind:this={addButton} onclick={addTask} class="checkbox fas fa-plus" aria-label="Add Task"></i>
 </div>
-<div class="container">
-	<input bind:this={taskInput} type="text" placeholder="Choose your next weapon against laziness" onkeypress="{handleKeypress}"/>
-	<button bind:this={sendButton} onclick={addTask} aria-label="send"><i class="fas fa-plus"></i></button>
+<div id="filterContainer">
+	<button bind:this={filterAllButton} class="selected" onclick={changeFilter}>All</button>
+	<button bind:this={filterInProgressButton} onclick={changeFilter}>In Progress</button>
+	<button bind:this={filterCompletedButton} onclick={changeFilter}>Completed</button>
 </div>
-<style>
-	.center {
-		margin-left: auto;
-		margin-right: auto;
-		width: 80%;
-	}
+<div id="mainContainer">
+	<div id="taskListContainer" class="center margin-top">
+		<div>
+			<TaskList bind:taskList bind:filterValue/>
+		</div>
+	</div>
+</div>
 
-	.container {
-		border: solid 1px black;
+<style>
+	#addTaskContainer {
+		align-items: center;
+		background-color: #333333;
+		border: solid 1px #229988;
 		border-radius: 2px;
-		bottom: 20px;
 		display: grid;
 		grid-template-columns: 1fr fit-content(10px);
 		left: 50%;
+		top: 5%;
 		position: fixed;
-		transform: translate(-50%, 0);
-		width: 80%;
+		transform: translateX(-50%);
+		width: 40%
 	}
 
-	.container * {
+	#addTaskContainer * {
 		border: none;
 	}
 
-	.container button {
-		background-color: white;
-		color: black;
+	#addTaskContainerBackdrop {
+		background-color: #222222;
+		height: 16vh;
+		left: 0;
+		right: 0;
+		top: 0;
+		position: fixed;
+		width: 100%;
 	}
 
-	.margin-top {
-		margin-top: 20px;
+	#filterContainer {
+		display: grid;
+		grid-template-columns: 33% 34% 33%;
+		left: 50%;
+		position: fixed;
+		top: 10%;
+		transform: translateX(-50%);
+		width: 59%;
+	}
+
+	#filterContainer .selected {
+		background-color: #229988;
+		color: #333333;
+	}
+
+	#filterContainer button {
+		color: #229988;
+		cursor: pointer;
+		background-color: #333333;
+		border: none;
+		border-radius: 5px;
+		height: 38px;
+		font-size: 20px;
+		font-weight: 700;
+	}
+
+	#mainContainer {
+		height: 84vh;
+		left: 50%;
+		overflow-y: auto;
+		position: fixed;
+		scrollbar-gutter: stable;
+		top: 16%;
+		transform: translateX(-50%);
+		width: 100%;
+	}
+
+	#taskInput {
+		border-color: #229988;
+		background-color: #333333;
+		color: #229988;
+		padding: 9px;
+	}
+
+	#taskInput:focus {
+		border-color: #229988;
+	}
+
+	#taskListContainer {
+		align-content: center;
+		display: grid;
+		grid-template-rows: 1fr fit-content(300px) fit-content(100px);
+		height: 90vh - 200px;
+		margin-bottom: 24px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: auto;
+		overflow-y: auto;
+		width: 80%;
+	}
+
+	.checkbox {
+		background-color: #555555;
+		padding: 9px
 	}
 
 	@media (min-width:700px) {
-		.center {
+		#taskListContainer {
 			width: 60%;
-		}
-
-		.container {
-			width: 40%;
 		}
 	}
 </style>

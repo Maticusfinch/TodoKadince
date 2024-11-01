@@ -8,7 +8,6 @@
 	export let onDelete;
 	export let onSave;
 	let checked = completedTimestamp;
-	let completedCheckbox;
 	let editButton;
 	let saveButton;
 	let cancelButton;
@@ -75,53 +74,70 @@
 
 <div class="container">
 	<Checkbox bind:checked style="grid-row: 1" onclick={toggleTaskCompletion}/>
-	<input bind:this={taskInput} class="hidden" style="grid-column: 2; grid-row: 1;" type="text" placeholder="Leaving this empty would be cheating..." onkeydown={handleTaskInputKeydown}/>
-	<span bind:this={taskSpan} style="grid-column: 2; grid-row: 1;">{buildTaskText()}</span>
+	<input bind:this={taskInput} id="taskInput" class="hidden" style="grid-column: 2; grid-row: 1;" type="text" placeholder="Leaving this empty would be cheating..." onkeydown={handleTaskInputKeydown}/>
+	<span bind:this={taskSpan} id="taskSpan" style="grid-column: 2; grid-row: 1;">{buildTaskText()}</span>
 	<div class="container">
-		<button bind:this={editButton} aria-label="edit" onclick={enableEdit}><i class="fas fa-pencil"></i></button>
-		<button bind:this={saveButton} class="hidden" aria-label="save" onclick={saveAndDisableEdit}><i class="fas fa-save"></i></button>
-		<button bind:this={cancelButton} class="hidden" aria-label="cancel" onclick={cancelAndDisableEdit}><i class="fas fa-circle-xmark"></i></button>
-		<button bind:this={deleteButton} class="hidden" aria-label="delete" onclick={handleDeleteButtonClick}><i class="fas fa-trash"></i></button>
+		<i bind:this={editButton} class="fas fa-pencil" aria-label="edit" onclick={enableEdit}></i>
+		<i bind:this={saveButton} class="hidden fas fa-save" aria-label="save" onclick={saveAndDisableEdit}></i>
+		<i bind:this={cancelButton} class="hidden fas fa-circle-xmark" aria-label="cancel" onclick={cancelAndDisableEdit}></i>
+		<i bind:this={deleteButton} class="hidden fas fa-trash" aria-label="delete" onclick={handleDeleteButtonClick}></i>
 	</div>
 </div>
 
 
 <style>
+	#taskInput {
+		border: none;
+		background: #222222;
+		color: #229988;
+		font-size: 20px;
+		margin-left: 9px;
+		padding: 9px;
+	}
+
+	#taskSpan {
+		font-size: 20px;
+		margin-left: 14px;
+	}
+
 	.container {
 		align-items: center;
 		background-color: #333333;
-		border: solid 1px black;
 		border-radius: 5px;
 		display: grid;
 		gap: 3px;
 		grid-template-columns: fit-content(100px) 1fr fit-content(200px);
-		padding: 9px;
+		margin-bottom: 9px;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 9px;
+		padding: 9px 9px 9px 14px;
+		width: 80%;
 	}
 
-	.container * {
-		padding: 9px;
-	}
-	
 	.container .container {
 		align-content: center;
+		background-color: #333333;
 		border: none;
-		gap: 2px;
+		gap: 3px;
+		margin: 0px;
 		padding: 0px;
 	}
 
-	.container .container * {
-		background-color: #666666;
-		padding: 0px;
+	.container .container i {
+		padding-left: 5px;
 	}
 
-	.container button {
-		border: none;
-		height: fit-content;
-		width: fit-content;
+	.fa-circle-xmark {
+		color: gold;
 	}
 
 	.fa-trash {
 		color: salmon;
+	}
+
+	.fa-save {
+		color: #229988;
 	}
 
 	.hidden {
